@@ -11,7 +11,7 @@ class Program
 
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(cluster))
         {
-            Console.WriteLine("Missing Required environment variables for MongooseDb credentials.Please enter the following line into the Terminal: ~/.zshrc");
+            Console.WriteLine("Missing Required environment variables for MongooseDb credentials.Please enter the following line into the Terminal: source ~/.zshrc");
             return;
         }
         string connectionUri = $"mongodb+srv://{username}:{Uri.EscapeDataString(password)}@{cluster}/?retryWrites=true&w=majority&appName=Cluster44";
