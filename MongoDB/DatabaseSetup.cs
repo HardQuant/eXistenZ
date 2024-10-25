@@ -27,12 +27,15 @@ public class DatabaseSetup
 
     public void SeedInitialData()
     {
-        var collection = _database.GetCollection<BsonDocument>("yourCollectionName");
+        var collection = _database.GetCollection<BsonDocument>("Drivers");
 
         var sampleDocument = new BsonDocument
         {
-            { "name", "Sample Data" },
-            { "description", "This is initial data for testing purposes." }
+            { "Driver", "Lewis Hamilton" },
+            { "Nationality", "British" },
+            {"Team(s)", new BsonArray {"McLaren",
+                                        "Mercedes-Benz/AMG PETRONAS"}
+            }
         };
 
         collection.InsertOne(sampleDocument);
