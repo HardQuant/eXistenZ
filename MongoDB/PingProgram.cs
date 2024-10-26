@@ -25,6 +25,11 @@ class Program
         {
             var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
             Console.WriteLine($"Pinged your deployment. You succesfully connected to MongoDB at [{DateTime.Now}]!");
+
+            //Initializing Database and collection
+            var DatabaseSetup = new DatabaseSetup(client, "F_1");
+            DatabaseSetup.CreateCollection("Drivers");
+            DatabaseSetup.SeedInitialData();
         }
         catch (Exception ex)
         {
