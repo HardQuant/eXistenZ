@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using MongoDB.Bson;
 
-class Program 
+class PingProgram 
 {
     static void Main(string[] args)
     {
@@ -26,10 +26,10 @@ class Program
             var result = client.GetDatabase("admin").RunCommand<BsonDocument>(new BsonDocument("ping", 1));
             Console.WriteLine($"Pinged your deployment. You succesfully connected to MongoDB at [{DateTime.Now}]!");
 
-            //Initializing Database and collection
+            /* //Initializing Database and collection-COMPLETED
             var DatabaseSetup = new DatabaseSetup(client, "F_1");
             DatabaseSetup.CreateCollection("Drivers");
-            DatabaseSetup.SeedInitialData();
+            DatabaseSetup.SeedInitialData(); */
         }
         catch (Exception ex)
         {
