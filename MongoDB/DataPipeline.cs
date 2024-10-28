@@ -1,22 +1,29 @@
 using System;
 using System.Threading.Tasks;
+using MongoDB.Driver;
 
 public class DataPipeline 
 {
-    public static asynch Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
+        // Step 1: Initialize and execute PingProgram to connect to MongoDB
         var pingProgram = new PingProgram();
         MongoClient? client = pingProgram.InitializeMongoClient();
 
         if (client != null)
         {
-            var database = new client.GetDatabase("F_1");
+            // Corrected usage of client to get the database
+            var database = client.GetDatabase("F_1");
 
-            //Instantiating each collection class to Extract, Transfor, and Load
+            // Step 2: Instantiate each collection class to Extract, Transform, and Load data
+            var drivers = new Drivers(database);
+            await drivers.LoadDataIntoMongoDB();
 
+            // Add more collection classes as needed
         }
-
-
-
+        else 
+        {
+            Console.WriteLine("Failed to initialize MongoDB client. ETL process cannot proceed.");
+        }
     }
 }
