@@ -1,23 +1,27 @@
 using MongoDB.Driver;
-using  MongoDB.Bson;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Net.Http;
 using System.Globalization;
+using System.Threading.Tasks;
 
 public class Drivers
 {
-    private readonly IMongoDatabase _database;
+    public readonly IMongoDatabase _database;
 
     public Drivers(IMongoDatabase database)
     {
         _database = database;
     }
 
-    private async Task<JArray> ExtractData()
+    // Step 2: Extract Data from API
+    public async Task<JArray> ExtractData()
     {
-        string apiURL = "http://ergast.com/api/f1/1986/drivers.json";
+        string apiUrl = "http://ergast.com/api/f1/1986/drivers.json";
         using (HttpClient httpClient = new HttpClient())
         {
-            HttpResponseMessage response = await httpClient.GetAsync(apiURL);
+            HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {
                 string data = await response.Content.ReadAsStringAsync();
@@ -32,9 +36,9 @@ public class Drivers
                 return null;
             }
         }
-
     }
 
+    // Step 3: Load Transformed Data into MongoDB
     public async Task LoadDataIntoMongoDB()
     {
         var collection = _database.GetCollection<BsonDocument>("Drivers");
@@ -44,26 +48,20 @@ public class Drivers
         {
             foreach (var driver in drivers)
             {
-                var transformedDocument = TransformData(driver);
+                var transformedDocument = new BsonDocument
+                {
+                    { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
+                    { "Nationality", driver["nationality"]?.ToString() },
+                    { "DOB", DateTime.ParseExact(driver["dateOfBirth"]?.ToString() ?? "", "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy") }
+                };
                 await collection.InsertOneAsync(transformedDocument);
                 Console.WriteLine($"Inserted driver: {transformedDocument["Driver"]}");
             }
-            Console.WriteLine("No Drivers Data to Load");
+            Console.WriteLine("All drivers data loaded into MongoDB successfully!");
         }
-
-        //transformation
-        private BsonDocument TransformData(JToken driver)
+        else
         {
-            string dob = driver[dateOfBirth]?.ToString();
-            string formattedDOB = DateTime.ParseExact(dob. "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                            .ToString("MM/DD/YYYY");
-
-            return new BsonDocument
-            {
-                { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
-                { "Nationality", driver["nationality"]?.ToString() },
-                {"DOB", formattedDOB }
-            };
+            Console.WriteLine("No drivers data to load.");
         }
     }
 }
