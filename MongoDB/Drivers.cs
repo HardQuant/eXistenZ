@@ -2,20 +2,20 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Net.Http;
 using System.Globalization;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 public class Drivers
 {
-    public readonly IMongoDatabase _database;
+    private readonly IMongoDatabase _database;
 
     public Drivers(IMongoDatabase database)
     {
         _database = database;
     }
 
-    // Step 2: Extract Data from API
+    // Step 1: Extract Data from API
     public async Task<JArray> ExtractData()
     {
         string apiUrl = "http://ergast.com/api/f1/1986/drivers.json";
@@ -38,7 +38,7 @@ public class Drivers
         }
     }
 
-    // Step 3: Load Transformed Data into MongoDB
+    // Step 2: Load Transformed Data into MongoDB
     public async Task LoadDataIntoMongoDB()
     {
         var collection = _database.GetCollection<BsonDocument>("Drivers");
@@ -48,16 +48,39 @@ public class Drivers
         {
             foreach (var driver in drivers)
             {
-                var transformedDocument = new BsonDocument
+                // Ensure driverId is extracted correctly
+                var driverId = driver["driverId"]?.ToString();
+                if (string.IsNullOrEmpty(driverId))
                 {
-                    { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
-                    { "Nationality", driver["nationality"]?.ToString() },
-                    { "DOB", DateTime.ParseExact(driver["dateOfBirth"]?.ToString() ?? "", "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy") }
-                };
-                await collection.InsertOneAsync(transformedDocument);
-                Console.WriteLine($"Inserted driver: {transformedDocument["Driver"]}");
+                    Console.WriteLine("Skipping driver due to missing driverId.");
+                    continue;
+                }
+
+                // Check for an existing document using driverId
+                var filter = Builders<BsonDocument>.Filter.Eq("driverId", driverId);
+                Console.WriteLine($"Checking for driverId = {driverId} in database.");
+                var existingDriver = await collection.Find(filter).FirstOrDefaultAsync();
+
+                if (existingDriver == null)
+                {
+                    // Insert new driver if not found
+                    var newDriver = new BsonDocument
+                    {
+                        { "driverId", driverId },  // Add driverId explicitly
+                        { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
+                        { "Nationality", driver["nationality"]?.ToString() },
+                        { "DOB", DateTime.ParseExact(driver["dateOfBirth"]?.ToString() ?? "", "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy") }
+                    };
+
+                    Console.WriteLine($"Inserting new driver: {newDriver}");
+                    await collection.InsertOneAsync(newDriver);
+                }
+                else
+                {
+                    Console.WriteLine($"Driver {driverId} already exists. Skipping...");
+                }
             }
-            Console.WriteLine("All drivers data loaded into MongoDB successfully!");
+            Console.WriteLine("Driver data load completed.");
         }
         else
         {
