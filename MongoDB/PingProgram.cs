@@ -34,6 +34,7 @@ public class PingProgram
         {
             Console.WriteLine($"Error connecting to MongoDB: {ex.Message}");
             return null; // Return null only if an exception occurs
+            //to check the connection run this in the terminal: curl -I http://ergast.com/api/f1/1986/drivers.json
         }
     }
 }
