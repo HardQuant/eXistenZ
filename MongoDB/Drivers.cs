@@ -15,7 +15,7 @@ public class Drivers
     // Step 1: Extract Data from API
     public async Task<JArray> ExtractData()
     {
-        string apiUrl = "http://ergast.com/api/f1/1986/drivers.json";
+        string apiUrl = "http://ergast.com/api/f1/1986/drivers.json"; // Update year as needed
         using (HttpClient httpClient = new HttpClient())
         {
             HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
@@ -35,7 +35,7 @@ public class Drivers
         }
     }
 
-    // Step 2: Load Transformed Data into MongoDB
+    // Step 2: Transform and Load Data into MongoDB
     public async Task LoadDataIntoMongoDB()
     {
         var collection = _database.GetCollection<BsonDocument>("Drivers");
@@ -61,14 +61,7 @@ public class Drivers
                 if (existingDriver == null)
                 {
                     // Insert new driver if not found
-                    var newDriver = new BsonDocument
-                    {
-                        { "driverId", driverId },  // Add driverId explicitly
-                        { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
-                        { "Nationality", driver["nationality"]?.ToString() },
-                        { "DOB", DateTime.ParseExact(driver["dateOfBirth"]?.ToString() ?? "", "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy") }
-                    };
-
+                    var newDriver = TransformData(driver);
                     Console.WriteLine($"Inserting new driver: {newDriver}");
                     await collection.InsertOneAsync(newDriver);
                 }
@@ -83,5 +76,30 @@ public class Drivers
         {
             Console.WriteLine("No drivers data to load.");
         }
+    }
+
+    // Step 3: Transform Data
+    private BsonDocument TransformData(JToken driver)
+    {
+     // Convert dateOfBirth to MM/DD/YYYY format
+     string dob = driver["dateOfBirth"]?.ToString();
+     string formattedDOB = DateTime.TryParseExact(
+        dob, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate
+     ) ? parsedDate.ToString("MM/dd/yyyy") : null;
+
+    // Create the transformed document
+    var document = new BsonDocument
+     {
+        { "driverId", driver["driverId"]?.ToString() },
+        { "Driver", $"{driver["givenName"]} {driver["familyName"]}" },
+        { "Nationality", driver["nationality"]?.ToString() },
+        { "DOB", formattedDOB }
+     };
+
+    // Add optional fields with explicit null handling
+     document.Add("permanentNumber", driver["permanentNumber"] != null ? driver["permanentNumber"].ToString() : BsonNull.Value);
+     document.Add("code", driver["code"] != null ? driver["code"].ToString() : BsonNull.Value);
+
+     return document;
     }
 }
