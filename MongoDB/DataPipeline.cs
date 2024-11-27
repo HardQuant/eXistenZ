@@ -17,7 +17,7 @@ public class DataPipeline
 
             // Step 2: Instantiate each collection class to Extract, Transform, and Load data
             var drivers = new Drivers(database);
-            await drivers.LoadDataIntoMongoDB();
+            await drivers.LoadDataIntoMongoDB(1986, 2024);
 
             // Add more collection classes as needed
         }
