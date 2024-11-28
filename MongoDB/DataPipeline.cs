@@ -1,8 +1,6 @@
-using System;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 
-public class DataPipeline 
+public class DataPipeline
 {
     public static async Task Main(string[] args)
     {
@@ -12,16 +10,19 @@ public class DataPipeline
 
         if (client != null)
         {
-            // Corrected usage of client to get the database
+            // Correct usage of client to get the database
             var database = client.GetDatabase("F_1");
 
-            // Step 2: Instantiate each collection class to Extract, Transform, and Load data
+            // Step 2: Instantiate Drivers and Constructors collection classes
             var drivers = new Drivers(database);
-            await drivers.LoadDataIntoMongoDB(1986, 2024);
+            await drivers.LoadDataIntoMongoDB(2007, 2008);
+
+            var constructors = new Constructors(database);
+            await constructors.LoadDataIntoMongoDB(1986, 2024);
 
             // Add more collection classes as needed
         }
-        else 
+        else
         {
             Console.WriteLine("Failed to initialize MongoDB client. ETL process cannot proceed.");
         }
