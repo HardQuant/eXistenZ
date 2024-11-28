@@ -1,7 +1,11 @@
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using MongoDB.Bson
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
 public class Constructors
 {
     private readonly IMongoDatabase _database;
@@ -15,7 +19,7 @@ public class Constructors
     // Main method to load data into MongoDB
     public async Task LoadDataIntoMongoDB(int startYear, int endYear)
     {
-        // Define the constructors collection | MongoDB will automatically create the collection if non-existent
+        // Define the constructors collection
         var constructorsCollection = _database.GetCollection<Constructor>("constructors");
 
         // HTTP client for API calls
@@ -71,21 +75,20 @@ public class Constructors
         }
     }
 
-    // Corrected private Constructor model class
+    // Constructor model class
     private class Constructor
-{
-    [BsonId] // MongoDB automatically creates this field
-    [BsonIgnoreIfDefault] // Ignore it if it's not explicitly set
-    public ObjectId Id { get; set; }
+    {
+        [BsonId] // MongoDB automatically creates this field
+        [BsonIgnoreIfDefault] // Ignore it if it's not explicitly set
+        public ObjectId Id { get; set; }
 
-    [BsonElement("constructorId")]
-    public string ConstructorId { get; set; }
+        [BsonElement("constructorId")]
+        public string ConstructorId { get; set; }
 
-    [BsonElement("name")]
-    public string Name { get; set; }
+        [BsonElement("name")]
+        public string Name { get; set; }
 
-    [BsonElement("nationality")]
-    public string Nationality { get; set; }
-}
-
+        [BsonElement("nationality")]
+        public string Nationality { get; set; }
+    }
 }
