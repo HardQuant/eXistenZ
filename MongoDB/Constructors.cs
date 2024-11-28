@@ -1,7 +1,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-
+using MongoDB.Bson
 public class Constructors
 {
     private readonly IMongoDatabase _database;
@@ -73,14 +73,19 @@ public class Constructors
 
     // Corrected private Constructor model class
     private class Constructor
-    {
-        [BsonElement("constructorId")]
-        public string ConstructorId { get; set; }
+{
+    [BsonId] // MongoDB automatically creates this field
+    [BsonIgnoreIfDefault] // Ignore it if it's not explicitly set
+    public ObjectId Id { get; set; }
 
-        [BsonElement("name")]
-        public string Name { get; set; }
+    [BsonElement("constructorId")]
+    public string ConstructorId { get; set; }
 
-        [BsonElement("nationality")]
-        public string Nationality { get; set; }
-    }
+    [BsonElement("name")]
+    public string Name { get; set; }
+
+    [BsonElement("nationality")]
+    public string Nationality { get; set; }
+}
+
 }
