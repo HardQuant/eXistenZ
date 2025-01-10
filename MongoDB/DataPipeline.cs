@@ -15,7 +15,7 @@ public class DataPipeline
 
             // Step 2: Instantiate Drivers and Constructors collection classes
             var drivers = new Drivers(database);
-            await drivers.LoadDataIntoMongoDB(2007, 2008);
+            await drivers.LoadDataIntoMongoDB(1986, 2024);
 
             var constructors = new Constructors(database);
             await constructors.LoadDataIntoMongoDB(1986, 2024);
