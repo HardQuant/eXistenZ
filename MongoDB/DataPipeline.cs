@@ -21,12 +21,18 @@ public class DataPipeline
 
             var constructors = new Constructors(database);
             await constructors.LoadDataIntoMongoDB(1986, 2024);
-            */
+            
 
             Console.WriteLine("Attempting to load Circuits...");
             var circuits = new Circuits(database);
             await circuits.LoadDataIntoMongoDB(1986, 2024);
             Console.WriteLine("Circuits logic executed successfully.");
+            */
+
+            Console.WriteLine("Attempting to load Race Schedules...");
+            var raceSchedule = new RaceSchedule(database);
+            await raceSchedule.LoadDataIntoMongoDB(1986, 2024);
+            Console.WriteLine("Race Schedules data loaded successfully.");
         }
         else
         {
