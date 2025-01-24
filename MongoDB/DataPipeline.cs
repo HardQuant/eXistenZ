@@ -4,23 +4,29 @@ public class DataPipeline
 {
     public static async Task Main(string[] args)
     {
-        // Step 1: Initialize and execute PingProgram to connect to MongoDB
+        Console.WriteLine("Starting DataPipeline...");
+
         var pingProgram = new PingProgram();
         MongoClient? client = pingProgram.InitializeMongoClient();
 
         if (client != null)
         {
-            // Correct usage of client to get the database
+            Console.WriteLine("MongoDB client initialized.");
             var database = client.GetDatabase("F_1");
 
-            // Step 2: Instantiate Drivers and Constructors collection classes
+            Console.WriteLine("Skipping Drivers and Constructors logic...");
+            /*
             var drivers = new Drivers(database);
             await drivers.LoadDataIntoMongoDB(1986, 2024);
 
             var constructors = new Constructors(database);
             await constructors.LoadDataIntoMongoDB(1986, 2024);
+            */
 
-            // Add more collection classes as needed
+            Console.WriteLine("Attempting to load Circuits...");
+            var circuits = new Circuits(database);
+            await circuits.LoadDataIntoMongoDB(1986, 2024);
+            Console.WriteLine("Circuits logic executed successfully.");
         }
         else
         {
