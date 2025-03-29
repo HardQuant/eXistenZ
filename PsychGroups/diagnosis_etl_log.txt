@@ -1,0 +1,15 @@
+[2025-03-24 04:53:16.757763] Invalid Dx_Code 'F32.A' for Georgia Yelton
+[2025-03-24 04:53:16.757763] SUMMARY � Inserted: 105, Skipped: 0, Invalid: 1, Missing patients: 0
+[2025-03-29 03:33:10.209869] Invalid Dx_Code 'F32.A' for Andre Barnett
+[2025-03-29 03:33:10.226509] Invalid Dx_Code 'F32.A' for James Collins
+[2025-03-29 03:33:10.227097] Invalid Dx_Code 'F32.A' for Kim Comstock
+[2025-03-29 03:33:10.243679] Invalid Dx_Code 'nan' for Steven Eubanks
+[2025-03-29 03:33:10.243679] Invalid Dx_Code '25.9' for Carol Everhart
+[2025-03-29 03:33:10.243679] Invalid Dx_Code 'F32A' for Carol Everhart
+[2025-03-29 03:33:10.260571] Invalid Dx_Code 'F32.A' for Teresa Franklin
+[2025-03-29 03:33:10.276896] Invalid Dx_Code 'F32.A' for Dixie Marklund
+[2025-03-29 03:33:10.296759] Invalid Dx_Code 'F32.A' for Patrick Reynolds
+[2025-03-29 03:33:10.312304] Invalid Dx_Code 'F32.A' for Ismael Jr Trejo
+[2025-03-29 03:33:10.312304] Invalid Dx_Code 'F32.A' for Jacqueline Williams
+[2025-03-29 03:33:10.327168] SUMMARY � Inserted: 121, Skipped: 0, Invalid: 12, Missing patients: 0
+[2025-03-29 03:37:36.677504] SUMMARY � Inserted: 69, Skipped: 0, Invalid: 0, Missing patients: 0
