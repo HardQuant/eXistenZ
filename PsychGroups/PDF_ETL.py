@@ -50,7 +50,6 @@ def count_sign_in_and_progress_notes(pdf_path):
         for page_number, image in enumerate(all_images, start=1):
             print(f"Processing page {page_number}/{total_pages}...")
             text = image_to_string(image)
-            print(f"Extracted text from page {page_number}:\n{text}\n")
             # Check if the extracted text matches progress note first to reduce false positives
             if is_progress_note(text):
                 progress_note_count += 1
